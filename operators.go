@@ -5,31 +5,31 @@ package plugin
 
 import (
 	"net/http"
-	"strings"
 	"os"
+	"strings"
 
+	corazawaf "command-line-arguments/home/tinnt2/FSOFT/github/CorazaWAF/main.go"
+
+	"github.com/corazawaf/coraza/v3"
 	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/getkin/kin-openapi/openapi3filter"
 	"github.com/getkin/kin-openapi/routers/gorillamux"
-	"github.com/corazawaf/coraza/v3"
-	"github.com/corazawaf/coraza/v3/experimental/plugins/plugintypes"
 )
 
 type validateOpenAPI struct{}
 
-var _ plugintypes.Operator = &validateOpenAPI
+func (o *validateOpenAPI) Init(data string) error{
+	return nil
+}
 
-func (o *validateOpenAPI) Evaluate(_ plugintypes.TransactionState, value string) bool {
-	schemaFile := "/home/tinnt2/FSOFT/Anew/coraza/APISchema/api.json"
-	if s := os.Getenv("SCHEMA_FILE"); s != "" {
-		schemaFile = s
-	}
+func (o *validateOpenAPI) Evaluate(tx *coraza.Transaction, value string) bool {
 	reqe := strings.Split(value, " ")
 	uri := reqe[1]
 	req, _ := http.NewRequest(http.MethodGet, uri, nil)
-	// Load the OpenAPI document
-	loader := openapi3.NewLoader()
-	doc, _ := loader.LoadFromFile(schemaFile)
+	doc, ok := tx.Waf.Config.Get("apifile", nil)
+	if !ok || doc == nil {
+		return true
+	}
 
 	// Find the operation (HTTP method + path) that matches the request
 	router, _ := gorillamux.NewRouter(doc)
@@ -49,4 +49,5 @@ func (o *validateOpenAPI) Evaluate(_ plugintypes.TransactionState, value string)
 	return false
 }
 
+var _ coraza.RuleOperator = &validateOpenAPI
 
