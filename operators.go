@@ -8,8 +8,6 @@ import (
 	"os"
 	"strings"
 
-	corazawaf "command-line-arguments/home/tinnt2/FSOFT/github/CorazaWAF/main.go"
-
 	"github.com/corazawaf/coraza/v3"
 	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/getkin/kin-openapi/openapi3filter"
