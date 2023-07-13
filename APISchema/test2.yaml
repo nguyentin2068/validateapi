@@ -1,0 +1,25 @@
+---
+openapi: 3.0.1
+info:
+  title: httpbin.org
+  description: 'A simple HTTP Request & Response Service.<br/> <br/> <b>Run locally:'
+  version: 0.9.2
+paths:
+  /hello:
+    get:
+      tags:
+      - HTTP Methods
+      summary: The request's query parameters.
+      responses:
+        '200':
+          description: The request's query parameters.
+          content: {}
+      parameters:
+      - in: query
+        name: int
+        schema:
+          type: integer
+          minimum: 10
+          maximum: 100
+        required: true
+components: {}
