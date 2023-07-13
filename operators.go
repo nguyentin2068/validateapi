@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/corazawaf/coraza/v3"
+	"github.com/corazawaf/coraza/v3/experimental/plugins/plugintypes"
 	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/getkin/kin-openapi/openapi3filter"
 	"github.com/getkin/kin-openapi/routers/gorillamux"
@@ -19,7 +20,7 @@ func (o *validateOpenAPI) Init(data string) error{
 	return nil
 }
 
-func (o *validateOpenAPI) Evaluate(tx *coraza.Transaction, value string) bool {
+func (o *validateOpenAPI) Evaluate(tx *plugintypes.TransactionState, value string) bool {
 	reqe := strings.Split(value, " ")
 	methd := reqe[0]
 	uri := reqe[1]
@@ -45,5 +46,5 @@ func (o *validateOpenAPI) Evaluate(tx *coraza.Transaction, value string) bool {
 	return false
 }
 
-var _ coraza.RuleOperator = &validateOpenAPI
+var _ plugintypes.Operator = &validateOpenAPI
 
