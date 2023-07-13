@@ -5,7 +5,6 @@ package plugin
 
 import (
 	"net/http"
-	"os"
 	"strings"
 
 	"github.com/corazawaf/coraza/v3"
@@ -26,7 +25,7 @@ func (o *validateOpenAPI) Evaluate(tx *coraza.Transaction, value string) bool {
 	uri := reqe[1]
 	req, _ := http.NewRequest(methd, uri, nil)
 	loader := openapi3.NewLoader()
-	doc, _ := loader.LoadFromFile(path)
+	doc, _ := loader.LoadFromFile("./APISchema/api.json")
 
 	// Find the operation (HTTP method + path) that matches the request
 	router, _ := gorillamux.NewRouter(doc)
