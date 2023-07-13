@@ -22,12 +22,11 @@ func (o *validateOpenAPI) Init(data string) error{
 
 func (o *validateOpenAPI) Evaluate(tx *coraza.Transaction, value string) bool {
 	reqe := strings.Split(value, " ")
+	methd := reqe[0]
 	uri := reqe[1]
-	req, _ := http.NewRequest(http.MethodGet, uri, nil)
-	doc, ok := tx.Waf.Config.Get("apifile", nil)
-	if !ok || doc == nil {
-		return true
-	}
+	req, _ := http.NewRequest(methd, uri, nil)
+	loader := openapi3.NewLoader()
+	doc, _ := loader.LoadFromFile(path)
 
 	// Find the operation (HTTP method + path) that matches the request
 	router, _ := gorillamux.NewRouter(doc)

@@ -2,11 +2,9 @@ package plugin
 
 import (
 	"github.com/corazawaf/coraza/v3"
-	"github.com/corazawaf/coraza/v3/internal/operators"
-	"github.com/corazawaf/coraza/v3/internal/seclang"
+	"github.com/corazawaf/coraza/v3/experimental/plugins"
 )
 
 func init() {
-	operators.RegisterPlugin("validateOpenAPI", func() coraza.RuleOperator { return new(validateOpenAPI) })
-	seclang.RegisterDirectivePlugin("apischemafile", directiveAPISchema)
+	plugins.RegisterOperator("validateOpenAPI", func() coraza.RuleOperator { return new(validateOpenAPI) })
 }
