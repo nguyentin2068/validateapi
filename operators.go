@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/corazawaf/coraza/v3"
+	"github.com/corazawaf/coraza/v3/experimental/plugins"
 	"github.com/corazawaf/coraza/v3/experimental/plugins/plugintypes"
 	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/getkin/kin-openapi/openapi3filter"
@@ -16,11 +17,16 @@ import (
 
 type validateOpenAPI struct{}
 
-func (o *validateOpenAPI) Init(data string) error{
-	return nil
-}
+var _ plugintypes.Operator = (*validateOpenAPI)(nil)
 
-func (o *validateOpenAPI) Evaluate(tx *plugintypes.TransactionState, value string) bool {
+func newValidateOpenAPI(plugintypes.OperatorOptions) (plugintypes.Operator, error) {
+	return &validateOpenAPI{}, nil
+}
+// func (o *validateOpenAPI) Init(data string) error{
+// 	return nil
+// }
+
+func (o *validateOpenAPI) Evaluate(tx plugintypes.TransactionState, value string) bool {
 	reqe := strings.Split(value, " ")
 	methd := reqe[0]
 	uri := reqe[1]
@@ -45,6 +51,9 @@ func (o *validateOpenAPI) Evaluate(tx *plugintypes.TransactionState, value strin
 	}
 	return false
 }
+func init() {
+	plugins.RegisterOperator("validateOpenAPI", newValidateOpenAPI)
+}
 
-var _ plugintypes.Operator = &validateOpenAPI
+
 
