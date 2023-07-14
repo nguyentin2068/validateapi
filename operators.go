@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/corazawaf/coraza/v3"
 	"github.com/corazawaf/coraza/v3/experimental/plugins"
 	"github.com/corazawaf/coraza/v3/experimental/plugins/plugintypes"
 	"github.com/getkin/kin-openapi/openapi3"
