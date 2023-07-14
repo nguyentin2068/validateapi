@@ -7,25 +7,32 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/corazawaf/coraza/v3/experimental/plugins"
-	"github.com/corazawaf/coraza/v3/experimental/plugins/plugintypes"
+	coraza"github.com/corazawaf/coraza/v3"
+	"github.com/corazawaf/coraza/v3/operators"
+    "github.com/corazawaf/coraza/v3/types"
 	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/getkin/kin-openapi/openapi3filter"
 	"github.com/getkin/kin-openapi/routers/gorillamux"
 )
+// Operator interface is used to define rule @operators
+type validateOpenAPI interface {
+	// Init is used during compilation to setup and cache
+	// the operator
+	Init(string) error
+	// Evaluate is used during the rule evaluation,
+	// it returns true if the operator succeeded against
+	// the input data for the transaction
+	Evaluate(*coraza.Transaction, string) bool
+   }
+type openAPIValidator struct{}
 
-type validateOpenAPI struct{}
+var _ coraza.Operator = &openAPIValidator{}
 
-var _ plugintypes.Operator = (*validateOpenAPI)(nil)
-
-func newValidateOpenAPI(plugintypes.OperatorOptions) (plugintypes.Operator, error) {
-	return &validateOpenAPI{}, nil
+func(*openAPIValidator) Init(_ string) error{
+	return nil
 }
-// func (o *validateOpenAPI) Init(data string) error{
-// 	return nil
-// }
 
-func (o *validateOpenAPI) Evaluate(tx plugintypes.TransactionState, value string) bool {
+func (*openAPIValidator) Evaluate(_ coraza.Transaction, value string) bool {
 	reqe := strings.Split(value, " ")
 	methd := reqe[0]
 	uri := reqe[1]
@@ -51,8 +58,9 @@ func (o *validateOpenAPI) Evaluate(tx plugintypes.TransactionState, value string
 	return false
 }
 func init() {
-	plugins.RegisterOperator("validateOpenAPI", newValidateOpenAPI)
+	operators.RegisterPlugin("validateOpenAPI", func() types.Operator {
+  	return &openAPIValidator{}
+ })
 }
-
 
 
